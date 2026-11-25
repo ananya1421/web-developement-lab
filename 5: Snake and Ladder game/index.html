@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head><style>
+body{font-family:Arial;text-align:center}
+#board{display:grid;grid-template-columns:repeat(10,38px);gap:2px;justify-content:center}
+.cell{height:38px;background:#eee;display:grid;place-items:center;border:1px solid #aaa}
+</style></head><body><h2>Snake and Ladder</h2>
+<div id="board"></div><p id="status">Player 1 turn</p>
+<button onclick="roll()">Roll Dice</button>
+<script>
+const b=document.getElementById('board');
+for(let n=100;n>=1;n--){let d=document.createElement('div');d.className='cell';d.id='n'+n;d.textContent=n;b.appendChild(d);}
+const snakes={99:54,70:55,52:42,25:2,95:72};
+const ladders={6:25,11:40,60:85,46:90,17:69};
+let pos=[0,0],player=0;
+function draw(){
+ document.querySelectorAll('.cell').forEach(x=>x.textContent=x.id.slice(1));
+ pos.forEach((v,i)=>{if(v>0)document.getElementById('n'+v).textContent+=' P'+(i+1);});
+}
+function roll(){
+ let dice=Math.floor(Math.random()*6)+1, next=pos[player]+dice;
+ if(next<=100){pos[player]=snakes[next]||ladders[next]||next;}
+ draw();
+ if(pos[player]===100){document.getElementById('status').textContent='Player '+(player+1)+' wins!';return;}
+ player=1-player;
+ document.getElementById('status').textContent='Player '+(player+1)+' turn (last roll '+dice+')';
+}
+draw();
+</script></body></html>
