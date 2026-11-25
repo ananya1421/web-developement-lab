@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html><body style="font-family:Arial;margin:30px">
+<h2>University Finder</h2>
+<input id="country" placeholder="Enter country (e.g. India)">
+<button onclick="find()">Search</button><ul id="result"></ul>
+<script>
+async function find(){
+ const country=document.getElementById('country').value.trim();
+ const list=document.getElementById('result'); list.innerHTML='Loading...';
+ if(!country){list.textContent='Please enter a country.';return;}
+ try{
+  const url='http://universities.hipolabs.com/search?country='+encodeURIComponent(country);
+  const res=await fetch(url); const data=await res.json(); list.innerHTML='';
+  if(!data.length){list.textContent='No universities found.';return;}
+  data.forEach(u=>{
+   const li=document.createElement('li');
+   const a=document.createElement('a'); a.href=u.web_pages[0]||'#';
+   a.textContent=u.name; a.target='_blank';
+   li.append(a,document.createTextNode(' | State: '+(u['state-province']||'Not available')));
+   list.appendChild(li);
+  });
+ }catch(e){list.textContent='Could not fetch data. Try again.';}
+}
+</script></body></html>
